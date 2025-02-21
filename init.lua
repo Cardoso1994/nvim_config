@@ -24,6 +24,7 @@ What is Kickstart?
 
   Kickstart.nvim is *not* a distribution.
 
+  -=
   Kickstart.nvim is a starting point for your own configuration.
     The goal is that you can read every line of code, top-to-bottom, understand
     what your configuration is doing, and modify it to suit your needs.
@@ -40,7 +41,6 @@ What is Kickstart?
     reference for how Neovim integrates Lua.
     - :help lua-guide
     - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
 Kickstart Guide:
 
   TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
@@ -184,10 +184,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -197,11 +197,19 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
 -- own Doom-like keymaps
 vim.keymap.set('n', '<leader>wh', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<leader>wl', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<leader>wj', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<leader>wk', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<leader>bk', '<cmd>bd<CR>', { desc = 'Delete buffer' })
+vim.keymap.set('n', '<leader>wd', '<cmd>clo<cr>', { desc = 'Close current window' })
+vim.keymap.set('i', 'jk', '<ESC>', { desc = 'Back to Normal mode' })
+vim.keymap.set('i', 'kj', '<ESC>', { desc = 'Back to Normal mode' })
+
+-- neogit (magit) keymaps
+vim.keymap.set('n', '<leader>gg', '<cmd>Neogit<cr>')
 
 vim.keymap.set('n', '<leader>hh', '/', { desc = 'hlsearch' })
 
@@ -246,20 +254,8 @@ require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
-  {
-    'sainnhe/gruvbox-material',
-    lazy = false, -- Load during startup
-    priority = 1000, -- Load this before other colorschemes
-    config = function()
-      -- Set contrast and palette
-      vim.g.gruvbox_material_background = 'medium' -- Options: 'hard', 'medium'(default), 'soft'
-      vim.g.gruvbox_material_foreground = 'material' -- Options: 'material'(default), 'mix', 'original'
-      vim.g.gruvbox_material_better_performance = 1
-      -- Set colorscheme
-      vim.cmd.colorscheme 'gruvbox-material'
-    end,
-    opts = {},
-  },
+  -- import all plugins from lua/custom/plugins
+  { import = 'custom.plugins' },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -880,6 +876,7 @@ require('lazy').setup({
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
+    enabled = false,
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
