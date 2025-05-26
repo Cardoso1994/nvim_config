@@ -203,7 +203,18 @@ vim.keymap.set('n', '<leader>wh', '<C-w><C-h>', { desc = 'Move focus to the left
 vim.keymap.set('n', '<leader>wl', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<leader>wj', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<leader>wk', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-vim.keymap.set('n', '<leader>bk', '<cmd>bd<CR>', { desc = 'Delete buffer' })
+-- vim.keymap.set('n', '<leader>bk', '<cmd>bd<CR>', { desc = 'Delete buffer' })
+--vim.keymap.set('n', '<leader>bk', '<cmd>bp|bd #<CR>', { desc = 'Delete buffer without closing window' })
+--
+vim.keymap.set('n', '<leader>bk', function()
+  -- Get current buffer number
+  local current_buf = vim.api.nvim_get_current_buf()
+  -- Create a new buffer
+  vim.cmd 'enew'
+  -- Delete the original buffer
+  vim.cmd('bd ' .. current_buf)
+end, { desc = 'Delete buffer without closing window' })
+
 vim.keymap.set('n', '<leader>wd', '<cmd>clo<cr>', { desc = 'Close current window' })
 vim.keymap.set('i', 'jk', '<ESC>', { desc = 'Back to Normal mode' })
 vim.keymap.set('i', 'kj', '<ESC>', { desc = 'Back to Normal mode' })
