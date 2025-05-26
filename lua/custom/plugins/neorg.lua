@@ -1,11 +1,15 @@
+-- return {
+--   'nvim-neorg/neorg',
+--   lazy = false, -- Disable lazy loading
+--   version = '*', -- Pin Neorg to latest release
+--   config = true,
+-- }
+
+-- return {}
 return {
   'nvim-neorg/neorg',
   build = ':Neorg sync-parsers',
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    'nvim-treesitter/nvim-treesitter',
-    'hrsh7th/nvim-cmp', -- Optional: for completion support
-  },
+  dependencies = { 'nvim-lua/plenary.nvim' },
   config = function()
     require('neorg').setup {
       load = {
@@ -14,26 +18,11 @@ return {
         ['core.dirman'] = { -- Manages Neorg workspaces
           config = {
             workspaces = {
-              notes = '~/notes', -- Configure your workspaces here
+              notes = '~/notes',
             },
-            default_workspace = 'notes',
           },
         },
-        ['core.completion'] = { -- Enables completion support
-          config = {
-            engine = 'nvim-cmp',
-          },
-        },
-        ['core.integrations.nvim-cmp'] = {}, -- Integrates with nvim-cmp
-        -- Additional optional modules:
-        ['core.export'] = {}, -- Export to different formats
-        ['core.export.markdown'] = {}, -- for tangling (code blocks)
-        ['core.tangle'] = {}, -- for tangling (code blocks)
-        ['core.presenter'] = {}, -- Presentation mode
-        ['core.ui.calendar'] = {}, -- Calendar integration
       },
     }
   end,
-  ft = 'norg', -- Load when a .norg file is opened
-  cmd = 'Neorg', -- Load when the Neorg command is used
 }
