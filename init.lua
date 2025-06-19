@@ -29,59 +29,7 @@ What is Kickstart?
     The goal is that you can read every line of code, top-to-bottom, understand
     what your configuration is doing, and modify it to suit your needs.
 
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
 
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
 -- Set <space> as the leader key
@@ -101,10 +49,6 @@ vim.g.have_nerd_font = true
 -- Make line numbers default
 vim.opt.number = true
 vim.opt.relativenumber = true
-
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -126,7 +70,7 @@ vim.opt.breakindent = true
 -- Save undo history
 vim.opt.undofile = true
 
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
+-- Case-insensitive searching UNLESS \C or one or more capital letters in search
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
@@ -165,6 +109,36 @@ vim.wo.wrap = false
 -- highlight column 80
 vim.o.colorcolumn = '80'
 
+-- [[[ Utility Functions ]]]
+-- Smart buffer delete: keeps window open and shows another buffer
+local function smart_bdelete()
+  local current_buf = vim.api.nvim_get_current_buf()
+  local alternate_buf = vim.fn.bufnr '#'
+
+  -- If alternate buffer is valid and listed, switch to it
+  if vim.fn.buflisted(alternate_buf) == 1 then
+    vim.cmd('buffer ' .. alternate_buf)
+  else
+    -- Find a valid listed buffer other than current
+    local found_buffer = false
+    for buf = 1, vim.fn.bufnr '$' do
+      if vim.fn.buflisted(buf) == 1 and buf ~= current_buf then
+        vim.cmd('buffer ' .. buf)
+        found_buffer = true
+        break
+      end
+    end
+
+    -- If no other buffer found, create a new empty buffer
+    if not found_buffer then
+      vim.cmd 'enew'
+    end
+  end
+
+  -- Finally, delete the original buffer
+  vim.cmd('bdelete ' .. current_buf)
+end
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -193,27 +167,42 @@ vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move to left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move to right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move to lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move to upper window' })
 
--- own Doom-like keymaps
-vim.keymap.set('n', '<leader>wh', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<leader>wl', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<leader>wj', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<leader>wk', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
--- vim.keymap.set('n', '<leader>bk', '<cmd>bd<CR>', { desc = 'Delete buffer' })
---vim.keymap.set('n', '<leader>bk', '<cmd>bp|bd #<CR>', { desc = 'Delete buffer without closing window' })
---
-vim.keymap.set('n', '<leader>bk', function()
-  -- Get current buffer number
-  local current_buf = vim.api.nvim_get_current_buf()
-  -- Create a new buffer
-  vim.cmd 'enew'
-  -- Delete the original buffer
-  vim.cmd('bd ' .. current_buf)
-end, { desc = 'Delete buffer without closing window' })
+-- Window Mappings
+vim.keymap.set('n', '<leader>wh', '<C-w><C-h>', { desc = 'Move to left window' })
+vim.keymap.set('n', '<leader>wl', '<C-w><C-l>', { desc = 'Move to right window' })
+vim.keymap.set('n', '<leader>wj', '<C-w><C-j>', { desc = 'Move to lower window' })
+vim.keymap.set('n', '<leader>wk', '<C-w><C-k>', { desc = 'Move to upper window' })
+vim.keymap.set('n', '<leader>wd', '<C-w><C-k>', { desc = 'Move to upper window' })
+vim.keymap.set('n', '<leader>ww', '<C-w>w', { desc = 'Move to next window' })
+vim.keymap.set('n', '<leader>wp', '<C-w>p', { desc = 'Move to previous window' })
+vim.keymap.set('n', '<leader>wq', '<C-w>q', { desc = 'Close current window' })
+vim.keymap.set('n', '<leader>wo', '<C-w>o', { desc = 'Close all other windows' })
+vim.keymap.set('n', '<leader>w=', '<C-w>=', { desc = 'Make all windows equal size' })
+vim.keymap.set('n', '<leader>w+', '<C-w>+', { desc = 'Increase window height' })
+vim.keymap.set('n', '<leader>w-', '<C-w>-', { desc = 'Decrease window height' })
+vim.keymap.set('n', '<leader>w>', '<C-w>>', { desc = 'Increase window width' })
+vim.keymap.set('n', '<leader>w<', '<C-w><', { desc = 'Decrease window width' })
+vim.keymap.set('n', '<leader>wH', '<C-w>H', { desc = 'Move window to far left' })
+vim.keymap.set('n', '<leader>wJ', '<C-w>J', { desc = 'Move window to bottom' })
+vim.keymap.set('n', '<leader>wK', '<C-w>K', { desc = 'Move window to top' })
+vim.keymap.set('n', '<leader>wL', '<C-w>L', { desc = 'Move window to far right' })
+vim.keymap.set('n', '<leader>wT', '<C-w>T', { desc = 'Move window to new tab' })
+vim.keymap.set('n', '<leader>wr', '<C-w>r', { desc = 'Rotate windows' })
+vim.keymap.set('n', '<leader>wR', '<C-w>R', { desc = 'Rotate windows in opposite direction' })
+vim.keymap.set('n', '<leader>wx', '<C-w>x', { desc = 'Exchange window with next window' })
+
+-- Smart buffer delete using the converted function
+vim.keymap.set('n', '<leader>bk', smart_bdelete, { desc = 'Delete buffer without closing window' })
+vim.keymap.set('n', '<leader>bd', smart_bdelete, { desc = 'Delete buffer without closing window' })
+vim.keymap.set('n', '<leader>bn', '<cmd>bnext<CR>', { desc = 'Next buffer' })
+vim.keymap.set('n', '<leader>bp', '<cmd>bprevious<CR>', { desc = 'Previous buffer' })
+vim.keymap.set('n', '<leader>bf', '<cmd>bfirst<CR>', { desc = 'First buffer' })
+vim.keymap.set('n', '<leader>bl', '<cmd>blast<CR>', { desc = 'Last buffer' })
 
 vim.keymap.set('n', '<leader>wd', '<cmd>clo<cr>', { desc = 'Close current window' })
 vim.keymap.set('i', 'jk', '<ESC>', { desc = 'Back to Normal mode' })
@@ -221,8 +210,6 @@ vim.keymap.set('i', 'kj', '<ESC>', { desc = 'Back to Normal mode' })
 
 -- neogit (magit) keymaps
 vim.keymap.set('n', '<leader>gg', '<cmd>Neogit<cr>')
-
-vim.keymap.set('n', '<leader>hh', '/', { desc = 'hlsearch' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
