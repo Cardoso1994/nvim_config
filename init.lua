@@ -199,7 +199,7 @@ vim.keymap.set('n', '<leader>wr', '<C-w>r', { desc = 'Rotate windows' })
 vim.keymap.set('n', '<leader>wR', '<C-w>R', { desc = 'Rotate windows in opposite direction' })
 vim.keymap.set('n', '<leader>wx', '<C-w>x', { desc = 'Exchange window with next window' })
 
--- Smart buffer delete using the converted function
+-- Buffer keymaps
 vim.keymap.set('n', '<leader>bk', smart_bdelete, { desc = 'Delete buffer without closing window' })
 vim.keymap.set('n', '<leader>bd', smart_bdelete, { desc = 'Delete buffer without closing window' })
 vim.keymap.set('n', '<leader>bn', '<cmd>bnext<CR>', { desc = 'Next buffer' })
@@ -210,6 +210,11 @@ vim.keymap.set('n', '<leader>bl', '<cmd>blast<CR>', { desc = 'Last buffer' })
 vim.keymap.set('n', '<leader>wd', '<cmd>clo<cr>', { desc = 'Close current window' })
 vim.keymap.set('i', 'jk', '<ESC>', { desc = 'Back to Normal mode' })
 vim.keymap.set('i', 'kj', '<ESC>', { desc = 'Back to Normal mode' })
+
+-- Tab keymaps
+vim.keymap.set('n', '<leader>tc', '<cmd>tabnew<cr>', { desc = 'New Tab' })
+vim.keymap.set('n', '<leader>tn', '<cmd>tabNext<cr>', { desc = 'Next Tab' })
+vim.keymap.set('n', '<leader>tp', '<cmd>tabprevious<cr>', { desc = 'Previous Tab' })
 
 -- neogit (magit) keymaps
 vim.keymap.set('n', '<leader>gg', '<cmd>Neogit<cr>')
