@@ -647,7 +647,17 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        pyright = {},
+        pyright = {
+          settings = {
+            python = {
+              -- install pyright with 'MasonInstall pyright' before
+              -- adding this code.
+              -- This works by expanding the current python interpreter but
+              -- mason installs pyright globally
+              pythonPath = vim.fn.exepath 'python',
+            },
+          },
+        },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
