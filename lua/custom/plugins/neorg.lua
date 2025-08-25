@@ -15,6 +15,9 @@ return {
       load = {
         ['core.defaults'] = {}, -- Loads default behaviour
         ['core.concealer'] = {}, -- Adds pretty icons to your documents
+        ['core.esupports.indent'] = {}, -- required for indent continuation
+        ['core.esupports.metagen'] = {}, -- optional, for metadata generation
+        ['core.integrations.treesitter'] = {}, -- syntax highlighting
         ['core.dirman'] = { -- Manages Neorg workspaces
           config = {
             workspaces = {
