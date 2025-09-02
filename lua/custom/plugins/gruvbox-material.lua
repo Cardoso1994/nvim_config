@@ -1,16 +1,15 @@
 return {
   {
-    'sainnhe/gruvbox-material',
+    'f4z3r/gruvbox-material.nvim',
     lazy = false, -- Load during startup
     priority = 1000, -- Load this before other colorschemes
-    enabled = false,
+    enabled = true,
     config = function()
-      -- Set contrast and palette
-      vim.g.gruvbox_material_background = 'medium' -- Options: 'hard', 'medium'(default), 'soft'
-      vim.g.gruvbox_material_foreground = 'material' -- Options: 'material'(default), 'mix', 'original'
-      vim.g.gruvbox_material_better_performance = 1
-      -- Set colorscheme
-      vim.cmd.colorscheme 'gruvbox-material'
+      require('gruvbox-material').setup {
+        -- Set contrast and palette
+        contrast = 'medium',
+      }
+      vim.cmd 'colorscheme gruvbox-material'
     end,
     opts = {},
   },
