@@ -1,13 +1,12 @@
 return {
   'oonamo/ef-themes.nvim',
-  lazy = flase,
+  lazy = false,
   enabled = true,
   config = function()
     require('ef-themes').setup {
       light = 'ef-tritanopia-light',
       dark = 'ef-tritanopia-dark',
     }
-    -- vim.cmd 'colorscheme ef-theme'
-    vim.cmd 'colorscheme ef-tritanopia-light'
+    vim.cmd.colorscheme 'ef-theme' -- Use the default theme switching
   end,
 }
