@@ -8,7 +8,8 @@ return {
       {
         '<leader>js',
         function()
-          require('iron.core').send(nil, vim.api.nvim_get_current_line())
+          require('iron.core').send_line()
+          require('iron.core').send(nil, '\r') -- \r is carriage return (Enter)
         end,
         mode = 'n',
         desc = '[J]upyter [S]end Line',
@@ -16,14 +17,17 @@ return {
       {
         '<leader>j',
         function()
-          require('iron.core').send(nil, require('iron.util').get_visual_selection())
+          require('iron.core').visual_send()
+          require('iron.core').send(nil, '\r') -- \r is carriage return (Enter)
         end,
         mode = 'v',
         desc = '[J]upyter Send Visual Selection',
       },
       {
         '<leader>jr',
-        '<cmd>IronRepl<cr>',
+        function()
+          require('iron.core').repl_for(vim.bo.filetype)
+        end,
         mode = 'n',
         desc = '[J]upyter [R]un (Open)',
       },
@@ -35,50 +39,83 @@ return {
       },
       {
         '<leader>jc',
-        '<cmd>IronClose<cr>',
+        function()
+          require('iron.core').close_repl()
+        end,
         mode = 'n',
         desc = '[J]upyter [C]lose',
       },
       {
         '<leader>jh',
-        '<cmd>IronRestart<cr>',
+        function()
+          require('iron.core').repl_restart()
+        end,
         mode = 'n',
         desc = '[J]upyter Restart (Hard)',
       },
+      -- Additional useful keybinds
+      {
+        '<leader>jq',
+        function()
+          require('iron.core').send(nil, 'exit')
+        end,
+        mode = 'n',
+        desc = '[J]upyter [Q]uit REPL',
+      },
+      {
+        '<leader>ji',
+        function()
+          require('iron.core').send(nil, vim.api.nvim_replace_termcodes('<C-c>', true, false, true))
+        end,
+        mode = 'n',
+        desc = '[J]upyter [I]nterrupt',
+      },
+      {
+        '<leader>jp',
+        function()
+          require('iron.core').send_paragraph()
+          require('iron.core').send(nil, '\r') -- \r is carriage return (Enter)
+        end,
+        mode = 'n',
+        desc = '[J]upyter Send [P]aragraph',
+      },
     },
-    opts = {
-      -- This table should only contain data (strings, numbers, simple tables),
-      -- not function calls like require().
-      config = {
+    config = function()
+      local iron = require 'iron.core'
+      local view = require 'iron.view'
+
+      iron.setup {
+        config = {
+          -- Whether a repl should be discarded or not
+          scratch_repl = true,
+          -- Your repl definitions come here
+          repl_definition = {
+            python = {
+              command = { 'ipython', '--no-autoindent' },
+            },
+            sh = {
+              command = { 'bash' },
+            },
+            lua = {
+              command = { 'lua' },
+            },
+          },
+          -- How the repl window will be displayed
+          repl_open_cmd = view.bottom(40),
+        },
+        -- Iron doesn't set keymaps by default anymore.
+        -- We're handling them in the keys section above
+        keymaps = {
+          -- You can add additional keymaps here that will be set
+          -- when iron loads, but since we're using lazy loading,
+          -- it's better to define them in the keys section
+        },
+        -- If the highlight is on, you can change how it looks
         highlight = {
-          name = 'IronPrimary',
+          italic = true,
         },
-        repl_definition = {
-          python = {
-            command = { 'ipython', '--no-autoindent' },
-          },
-          sh = {
-            command = { 'bash' },
-          },
-          lua = {
-            command = { 'lua' },
-          },
-        },
-      },
-      core = {
-        ensure_parsers = true,
-      },
-    },
-    config = function(_, opts)
-      -- The config function runs AFTER the plugin is loaded.
-      -- This is the correct place to call functions from the plugin.
-
-      -- FIX: Set the repl_open_cmd here, just before setting up.
-      opts.config.repl_open_cmd = require('iron.view').right(50)
-      opts.config.visibility = require('iron.visibility').focus
-
-      require('iron.core').setup(opts)
-      vim.api.nvim_set_hl(0, 'IronPrimary', { fg = '#61AFEF', bold = true })
+        ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
+      }
     end,
   },
 }
