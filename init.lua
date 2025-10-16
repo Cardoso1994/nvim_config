@@ -200,6 +200,28 @@ vim.keymap.set('n', '<leader>wT', '<C-w>T', { desc = 'Move window to new tab' })
 vim.keymap.set('n', '<leader>wr', '<C-w>r', { desc = 'Rotate windows' })
 vim.keymap.set('n', '<leader>wR', '<C-w>R', { desc = 'Rotate windows in opposite direction' })
 vim.keymap.set('n', '<leader>wx', '<C-w>x', { desc = 'Exchange window with next window' })
+vim.keymap.set('n', '<C-w>K', function()
+  local wins = vim.api.nvim_list_wins()
+  for _, win in ipairs(wins) do
+    local config = vim.api.nvim_win_get_config(win)
+    -- Check if it is a floating window
+    if config.zindex and config.zindex > 0 then
+      vim.api.nvim_set_current_win(win)
+      return
+    end
+  end
+end, { desc = 'Focus floating window' })
+vim.keymap.set('n', 'gK', function()
+  local wins = vim.api.nvim_list_wins()
+  for _, win in ipairs(wins) do
+    local config = vim.api.nvim_win_get_config(win)
+    -- Check if it is a floating window
+    if config.zindex and config.zindex > 0 then
+      vim.api.nvim_set_current_win(win)
+      return
+    end
+  end
+end, { desc = 'Focus floating window' })
 
 -- Buffer keymaps
 vim.keymap.set('n', '<leader>bk', smart_bdelete, { desc = 'Delete buffer without closing window' })
