@@ -103,7 +103,7 @@ return {
             },
           },
           -- How the repl window will be displayed
-          repl_open_cmd = view.bottom(40),
+          repl_open_cmd = view.bottom(20),
         },
         -- Iron doesn't set keymaps by default anymore.
         -- We're handling them in the keys section above
