@@ -1,5 +1,4 @@
 -- lua/plugins/iron.lua
-
 return {
   {
     'Vigemus/iron.nvim',
@@ -92,6 +91,9 @@ return {
           repl_definition = {
             python = {
               command = { 'ipython', '--no-autoindent' },
+              format = require('iron.fts.common').bracketed_paste_python,
+              block_dividers = { '# %%', '#%%' },
+              env = { PYTHON_BASIC_REPL = '1' }, -- this is needed for python3.13 and up.
             },
             sh = {
               command = { 'bash' },
