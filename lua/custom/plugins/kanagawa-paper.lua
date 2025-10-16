@@ -3,7 +3,7 @@ return {
     'thesimonho/kanagawa-paper.nvim',
     lazy = false,
     priority = 1000, -- Load this before other colorschemes
-    enabled = true,
+    enabled = false,
     config = function()
       -- require('kanagawa-paper').setup {
       --   theme = 'wave',
@@ -12,7 +12,7 @@ return {
       --     light = 'lotus',
       --   },
       -- }
-      vim.cmd 'colorscheme kanagawa-paper'
+      -- vim.cmd 'colorscheme kanagawa-paper'
     end,
   },
 }
