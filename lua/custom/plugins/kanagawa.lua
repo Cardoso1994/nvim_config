@@ -3,10 +3,11 @@ return {
     'rebelot/kanagawa.nvim',
     lazy = false,
     priority = 1000, -- Load this before other colorschemes
-    enabled = false,
+    enabled = true,
     config = function()
       require('kanagawa').setup {
         theme = 'wave',
+        dimInactive = true,
         background = {
           dark = 'dragon',
           light = 'lotus',
