@@ -680,14 +680,53 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
+
+        -- Ruff LSP: Fast linting + formatting (uses native `ruff server`)
+        -- Config file: ~/.config/ruff/ruff.toml (Google Style Guide)
+        ruff = {
+          -- Use brew-installed ruff (faster than Mason's Python wrapper)
+          cmd = { 'ruff', 'server' },
+          -- Match pyright's encoding to avoid warning
+          capabilities = {
+            general = {
+              positionEncodings = { 'utf-16' },
+            },
+          },
+          settings = {
+            -- Use global config file
+            configurationPreference = 'filesystemFirst',
+            -- Organize imports on format (part of Google Style)
+            organizeImports = true,
+            -- Fix auto-fixable issues on save
+            fixAll = true,
+          },
+        },
+
+        -- Pyright: Type checking only (ruff handles linting)
+        -- install pyright with 'MasonInstall pyright' before
+        -- adding this code.
         pyright = {
           settings = {
+            pyright = {
+              -- Let ruff handle imports organization
+              disableOrganizeImports = true,
+            },
             python = {
-              -- install pyright with 'MasonInstall pyright' before
-              -- adding this code.
               -- This works by expanding the current python interpreter but
               -- mason installs pyright globally
               pythonPath = vim.fn.exepath 'python',
+              analysis = {
+                -- Only type checking, ruff handles the rest
+                typeCheckingMode = 'standard',
+                -- Disable diagnostics that ruff covers
+                diagnosticSeverityOverrides = {
+                  -- Keep type errors, disable style warnings (ruff handles these)
+                  reportUnusedImport = 'none',
+                  reportUnusedVariable = 'none',
+                  reportUnusedClass = 'none',
+                  reportUnusedFunction = 'none',
+                },
+              },
             },
           },
         },
@@ -798,8 +837,9 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        -- Ruff handles both formatting and import sorting (faster than isort+black)
+        -- Uses config from ~/.config/ruff/ruff.toml
+        python = { 'ruff_organize_imports', 'ruff_format' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
