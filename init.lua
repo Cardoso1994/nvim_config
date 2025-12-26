@@ -235,6 +235,11 @@ vim.keymap.set('n', '<leader>wd', '<cmd>clo<cr>', { desc = 'Close current window
 vim.keymap.set('i', 'jk', '<ESC>', { desc = 'Back to Normal mode' })
 vim.keymap.set('i', 'kj', '<ESC>', { desc = 'Back to Normal mode' })
 
+-- Toggle background (dark/light)
+vim.keymap.set('n', '<leader>tb', function()
+  vim.o.background = vim.o.background == 'dark' and 'light' or 'dark'
+end, { desc = '[T]oggle [B]ackground' })
+
 -- Tab keymaps
 vim.keymap.set('n', '<leader>tc', '<cmd>tabnew<cr>', { desc = 'New Tab' })
 vim.keymap.set('n', '<leader>tn', '<cmd>tabNext<cr>', { desc = 'Next Tab' })
