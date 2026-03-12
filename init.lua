@@ -710,6 +710,16 @@ require('lazy').setup({
         -- ts_ls = {},
         --
 
+        matlab_ls = {
+          settings = {
+            MATLAB = {
+              -- Auto-detect MATLAB install on macOS; update if needed
+              installPath = (vim.fn.glob('/Applications/MATLAB_R*.app', false, true)[1] or ''),
+              matlabConnectionTiming = 'onStart',
+            },
+          },
+        },
+
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -1011,26 +1021,19 @@ require('lazy').setup({
     branch = 'main',
     build = ':TSUpdate',
     lazy = false,
-    config = function()
-      -- Install parsers
-      require('nvim-treesitter').install {
-        'bash',
-        'c',
-        'diff',
-        'html',
-        'lua',
-        'luadoc',
-        'markdown',
-        'markdown_inline',
-        'query',
-        'vim',
-        'vimdoc',
-        'python',
-      }
+    opts = {
+      ensure_installed = {
+        'bash', 'c', 'diff', 'html', 'lua', 'luadoc',
+        'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python', 'matlab',
+      },
+    },
+    config = function(_, opts)
+      -- Setup nvim-treesitter
+      require('nvim-treesitter').setup(opts)
 
       -- Enable treesitter highlighting for all supported languages
       vim.api.nvim_create_autocmd('FileType', {
-        pattern = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'python' },
+        pattern = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'python', 'matlab' },
         callback = function()
           vim.treesitter.start()
         end,

@@ -95,6 +95,18 @@ return {
               block_dividers = { '# %%', '#%%' },
               env = { PYTHON_BASIC_REPL = '1' }, -- this is needed for python3.13 and up.
             },
+            matlab = {
+              command = {
+                (vim.fn.glob('/Applications/MATLAB_R*.app', false, true)[1] or '') .. '/bin/matlab',
+                '-nodesktop', '-nosplash',
+              },
+              -- Write selection to a temp file and run it, to handle multiline blocks
+              format = function(lines)
+                local tmpfile = vim.fn.tempname() .. '.m'
+                vim.fn.writefile(lines, tmpfile)
+                return { "run('" .. tmpfile .. "')" }
+              end,
+            },
             sh = {
               command = { 'bash' },
             },
@@ -103,7 +115,7 @@ return {
             },
           },
           -- How the repl window will be displayed
-          repl_open_cmd = view.bottom(20),
+          repl_open_cmd = view.split.botright("30%"),
         },
         -- Iron doesn't set keymaps by default anymore.
         -- We're handling them in the keys section above
