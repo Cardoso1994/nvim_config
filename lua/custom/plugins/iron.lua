@@ -95,18 +95,6 @@ return {
               block_dividers = { '# %%', '#%%' },
               env = { PYTHON_BASIC_REPL = '1' }, -- this is needed for python3.13 and up.
             },
-            matlab = {
-              command = {
-                (vim.fn.glob('/Applications/MATLAB_R*.app', false, true)[1] or '') .. '/bin/matlab',
-                '-nodesktop', '-nosplash',
-              },
-              -- Write selection to a temp file and run it, to handle multiline blocks
-              format = function(lines)
-                local tmpfile = vim.fn.tempname() .. '.m'
-                vim.fn.writefile(lines, tmpfile)
-                return { "run('" .. tmpfile .. "')" }
-              end,
-            },
             sh = {
               command = { 'bash' },
             },
