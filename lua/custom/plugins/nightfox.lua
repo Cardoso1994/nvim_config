@@ -1,7 +1,7 @@
--- nightfox.nvim: dawnfox for light backgrounds, terafox for dark ones.
+-- nightfox.nvim: dawnfox for light backgrounds, carbonfox for dark ones.
 -- The WezTerm side lives in ~/dotfiles/wezterm/config/colors.lua (family
 -- "nightfox"), with palettes copied from the plugin's extra/ directory.
-local styles = { light = 'dawnfox', dark = 'terafox' }
+local styles = { light = 'dawnfox', dark = 'carbonfox' }
 
 local function apply_for_background()
   local target = styles[vim.o.background] or styles.dark
@@ -28,6 +28,7 @@ return {
   {
     'EdenEast/nightfox.nvim',
     lazy = false,
+    enabled = false, -- gruvbox-material is the active colorscheme
     priority = 1000, -- Load this before other colorschemes
     config = function()
       require('nightfox').setup {
